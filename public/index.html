@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plateau – calories du Crous de Montpellier</title>
+  <meta name="description" content="Tape ce que tu as mangé au Crous de Montpellier, Plateau calcule les calories du repas.">
+  <meta name="theme-color" content="#1d5b6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Plateau</h1>
+
+    <section class="entry">
+      <label for="meal">Ton repas au Crous</label>
+      <textarea id="meal" rows="2" spellcheck="false" autocomplete="off" autocapitalize="none"
+        placeholder="pâtes bolo, 2 yaourts à la fraise"></textarea>
+      <p id="ia" class="ia" role="status"></p>
+    </section>
+
+    <p id="notice" class="notice" hidden></p>
+
+    <section class="total" aria-live="polite">
+      <div class="total-main">
+        <p class="kcal"><span id="kcal">0</span><small>kcal</small></p>
+        <p id="share" class="share">Écris ton repas ci-dessus.</p>
+      </div>
+      <div id="ring" class="ring" style="--p:0" aria-hidden="true"></div>
+      <div id="macros" class="macros" hidden>
+        <div id="macro-bar" class="macro-bar" aria-hidden="true"></div>
+        <ul id="macro-list" class="macro-list"></ul>
+      </div>
+    </section>
+
+    <section id="tray" class="tray" aria-live="polite" hidden></section>
+
+    <section id="allergens" class="allergens" hidden>
+      <h2>Allergènes du repas</h2>
+      <ul id="allergen-list"></ul>
+    </section>
+
+    <footer>
+      <p>Valeurs par portion, d'après infos-nutrition.crous-montpellier.fr. Référence : 2 000 kcal par jour. Estimation indicative, pas un avis médical.</p>
+    </footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
