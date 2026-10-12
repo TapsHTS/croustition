@@ -11,6 +11,43 @@ const store = {
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmt = (n) => Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 1 });
 
+// ---------- PWA : service worker, mises à jour, installation ----------
+if ('serviceWorker' in navigator) {
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController) $('#update').hidden = false; // une nouvelle version vient de prendre la main
+  });
+  $('#reload').addEventListener('click', () => location.reload());
+}
+
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function showInstall(text, label, onClick) {
+  $('#install-text').textContent = text;
+  const btn = $('#install-btn');
+  btn.textContent = label;
+  btn.onclick = onClick;
+  $('#install').hidden = false;
+}
+if (!standalone && !store.get('plateau.installDismissed', false)) {
+  if (isIos) {
+    showInstall('Pour installer Plateau : touche Partager, puis « Sur l\'écran d\'accueil ».', 'Compris', () => {
+      store.set('plateau.installDismissed', true);
+      $('#install').hidden = true;
+    });
+  }
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    showInstall('Plateau peut s\'installer comme une application.', 'Installer', async () => {
+      $('#install').hidden = true;
+      e.prompt();
+      await e.userChoice;
+    });
+  });
+}
+navigator.storage?.persist?.().catch(() => {}); // demande au navigateur de ne pas purger le cache (modèle, données)
+
 let products = [], index = [], vectors = null, dim = 0;
 let overrides = store.get('plateau.overrides', {}); // "pate bolognaise" -> id du produit choisi
 let lines = [];

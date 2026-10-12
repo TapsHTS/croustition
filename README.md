@@ -20,6 +20,13 @@ Les sections 1 à 30 sont balayées ; celles qui ne sont pas nommées dans `scri
 1. Dépôt public, commit de tout le projet **y compris `public/data/`**.
 2. Settings → Pages → Source : **GitHub Actions**. Chaque push sur `main` déploie le dossier `public/`.
 
+## PWA (installation et hors-ligne)
+
+- `manifest.webmanifest` + icônes (`public/icons/`) : l'app s'installe sur l'écran d'accueil. Sur iPhone : Safari → Partager → « Sur l'écran d'accueil » (l'app l'explique elle-même au premier passage).
+- `public/sw.js` précharge l'application et les données (`products.json`, `vectors.*`) puis les sert depuis le cache. Les scripts du CDN (transformers.js, runtime ONNX) sont mis en cache à la première utilisation ; les poids du modèle sont mis en cache par transformers.js.
+- Le workflow remplace `__BUILD__` par le hash du commit : chaque déploiement crée un nouveau cache et l'app affiche « Une nouvelle version est prête » au prochain passage en ligne. En local, `__BUILD__` reste tel quel, ce qui fonctionne aussi.
+- Pour tester le hors-ligne : `npm run serve`, ouvre l'app, recharge-la une fois, puis coupe le réseau dans les outils de développement.
+
 ## Comment ça comprend la phrase
 
 1. Découpage sur `,` `;` `+` « et » « avec ».

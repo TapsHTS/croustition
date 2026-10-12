@@ -45,6 +45,7 @@ textarea:focus { border-color: var(--tray); outline: none; box-shadow: 0 0 0 3px
 .ia { margin: 0.45rem 0 0; font-size: 0.85rem; color: var(--ink-soft); min-height: 1.3em; }
 .ia button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 0.15rem 0.7rem; margin-left: 0.4rem; }
 .notice { background: var(--warn); border-radius: 10px; padding: 0.6rem 0.8rem; font-size: 0.9rem; margin: 0.8rem 0 0; }
+.notice button { border: 1px solid var(--ink-soft); background: var(--surface); border-radius: 999px; padding: 0.15rem 0.8rem; margin-left: 0.3rem; min-height: 2rem; }
 
 .total {
   display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; align-items: center;
