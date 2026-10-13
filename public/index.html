@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Plateau – calories du Crous de Montpellier</title>
   <meta name="description" content="Tape ce que tu as mangé au Crous de Montpellier, Plateau calcule les calories du repas.">
-  <meta name="theme-color" content="#1d5b6e">
+  <meta name="theme-color" content="#e4ecef">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -15,46 +15,112 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Plateau</h1>
+    <!-- Écran 1 : saisir un repas / résumé du repas -->
+    <div id="view-main">
+      <header class="brand">
+        <div class="brand-row">
+          <h1>Plateau.</h1>
+          <span class="emblem" aria-hidden="true"><i class="ic ic-utensils" style="--s:23px"></i></span>
+        </div>
+        <p class="tagline">Ton repas, en clair.&nbsp;&nbsp;·&nbsp;&nbsp;Crous de Montpellier</p>
+      </header>
 
-    <section class="entry">
-      <label for="meal">Ton repas au Crous</label>
-      <textarea id="meal" rows="2" spellcheck="false" autocomplete="off" autocapitalize="none"
-        placeholder="pâtes bolo, 2 yaourts à la fraise"></textarea>
-      <p id="ia" class="ia" role="status"></p>
-    </section>
+      <p id="notice" class="notice" hidden></p>
+      <p id="update" class="notice" hidden>Une nouvelle version est prête. <button type="button" id="reload">Recharger</button></p>
+      <p id="install" class="notice" hidden><span id="install-text"></span> <button type="button" id="install-btn"></button></p>
 
-    <p id="notice" class="notice" hidden></p>
-    <p id="update" class="notice" hidden>Une nouvelle version est prête. <button type="button" id="reload">Recharger</button></p>
-    <p id="install" class="notice" hidden><span id="install-text"></span> <button type="button" id="install-btn"></button></p>
+      <section class="entry">
+        <label for="meal" class="entry-title">Ton repas au Crous</label>
+        <div class="field">
+          <textarea id="meal" rows="1" spellcheck="false" autocomplete="off" autocapitalize="none"
+            placeholder="pâtes bolo, 2 yaourts à la fraise"></textarea>
+          <p id="hint" class="hint">Ajoute les quantités si tu les connais.</p>
+        </div>
+        <button type="button" id="go" class="primary" disabled>
+          <span id="go-label">Estimer mon repas</span><i id="go-icon" class="ic ic-arrow-right" style="--s:18px"></i>
+        </button>
+        <p id="ia" class="ia" role="status"></p>
+      </section>
 
-    <section class="total" aria-live="polite">
-      <div class="total-main">
-        <p class="kcal"><span id="kcal">0</span><small>kcal</small></p>
-        <p id="share" class="share">Écris ton repas ci-dessus.</p>
+      <section id="summary" class="summary" aria-live="polite">
+        <div class="summary-top">
+          <div class="total">
+            <p class="lbl">Énergie estimée</p>
+            <p class="value"><span id="kcal" class="num">—</span><span class="unit">kcal</span></p>
+            <p class="ref">Repère : 2 000 kcal / jour</p>
+          </div>
+          <div class="ring" role="img" aria-label="Part du repère journalier">
+            <svg viewBox="0 0 88 88" aria-hidden="true">
+              <circle class="ring-bg" cx="44" cy="44" r="40"/>
+              <circle id="ring-fg" class="ring-fg" cx="44" cy="44" r="40" pathLength="100" stroke-dasharray="0 100"/>
+            </svg>
+            <div class="ring-text"><b id="pct">—</b><span>du repère</span></div>
+          </div>
+        </div>
+        <div id="macro-bar" class="macro-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="macros">
+          <div><span class="lgd"><i class="dot" style="background:var(--prot)"></i>Protéines</span><b id="m-prot">— g</b></div>
+          <div><span class="lgd"><i class="dot" style="background:var(--carb)"></i>Glucides</span><b id="m-carb">— g</b></div>
+          <div><span class="lgd"><i class="dot" style="background:var(--fat)"></i>Lipides</span><b id="m-fat">— g</b></div>
+        </div>
+      </section>
+
+      <section id="empty" class="tray tray-empty">
+        <div class="slot-empty">
+          <i class="ic ic-utensils" style="--s:25px"></i>
+          <p class="t">Écris ton repas ci-dessus.</p>
+          <p class="s">On s’occupe de remplir le plateau.</p>
+        </div>
+      </section>
+
+      <section id="tray" class="tray" aria-live="polite" hidden>
+        <div class="tray-head"><h2>Sur ton plateau</h2><p id="tray-count"></p></div>
+        <div id="foods" class="foods"></div>
+      </section>
+
+      <section id="allergens" class="allergens" hidden>
+        <h2>Allergènes du repas</h2>
+        <ul id="allergen-list"></ul>
+        <p class="small">À confirmer auprès du restaurant et sur les emballages.</p>
+      </section>
+
+      <p class="legal">Estimations indicatives, selon les portions et les recettes. Ne constituent pas un avis médical.</p>
+    </div>
+
+    <!-- Écran 2 : changer de produit -->
+    <div id="view-edit" hidden>
+      <nav class="edit-nav">
+        <button type="button" id="back" class="back"><i class="ic ic-arrow-left" style="--s:20px"></i>Mon repas</button>
+        <span class="mini-brand" aria-hidden="true">Plateau.</span>
+      </nav>
+      <h2 class="edit-title">Changer de produit</h2>
+      <p class="edit-sub">Choisis le produit qui correspond à ce que tu as pris.</p>
+
+      <div class="to-fix">
+        <span class="picto dark" aria-hidden="true"><i id="fix-icon" class="ic ic-milk" style="--s:20px"></i></span>
+        <div class="to-fix-text"><p id="fix-name" class="fix-name"></p><p id="fix-sub" class="fix-sub"></p></div>
       </div>
-      <div id="ring" class="ring" style="--p:0" aria-hidden="true"></div>
-      <div id="macros" class="macros" hidden>
-        <div id="macro-bar" class="macro-bar" aria-hidden="true"></div>
-        <ul id="macro-list" class="macro-list"></ul>
-      </div>
-    </section>
 
-    <section id="tray" class="tray" aria-live="polite" hidden></section>
+      <label class="search"><i class="ic ic-search" style="--s:18px"></i>
+        <input id="q" type="search" placeholder="Rechercher un produit" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Rechercher un produit">
+      </label>
 
-    <section id="allergens" class="allergens" hidden>
-      <h2>Allergènes du repas</h2>
-      <ul id="allergen-list"></ul>
-    </section>
+      <div class="results-head"><span>Produits proposés</span><span id="count"></span></div>
+      <ul id="results" class="results" role="radiogroup" aria-label="Produits proposés"></ul>
 
-    <footer>
-      <p>Valeurs par portion, d'après infos-nutrition.crous-montpellier.fr. Référence : 2 000 kcal par jour. Estimation indicative, pas un avis médical.</p>
-    </footer>
+      <section class="preview" aria-live="polite">
+        <div class="preview-row"><span>Ton repas après correction</span><b id="pv-total">—</b></div>
+        <p id="pv-delta" class="small"></p>
+      </section>
+
+      <button type="button" id="confirm" class="primary"><span>Confirmer le produit</span><i class="ic ic-check" style="--s:18px"></i></button>
+      <p class="legal">Estimations indicatives, selon les portions et les recettes. Ne constituent pas un avis médical.</p>
+    </div>
   </main>
   <script type="module" src="app.js"></script>
 </body>

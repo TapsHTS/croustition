@@ -123,7 +123,7 @@ export function lexScore(qTok, pTok) {
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
 // qVec / vectors / dim optionnels : sans eux, recherche par mots uniquement.
-export function rank(query, index, qVec = null, vectors = null, dim = 0) {
+export function rank(query, index, qVec = null, vectors = null, dim = 0, limit = CONFIG.maxAlternatives) {
   const qTok = tokens(query);
   const useEmb = !!(qVec && vectors && dim && vectors.length >= index.length * dim);
   const scored = index.map((p) => {
@@ -145,7 +145,7 @@ export function rank(query, index, qVec = null, vectors = null, dim = 0) {
     if (seen.has(c.nameKey)) continue;
     seen.add(c.nameKey);
     out.push(c);
-    if (out.length === CONFIG.maxAlternatives) break;
+    if (out.length === limit) break;
   }
   return out;
 }

@@ -8,7 +8,9 @@ const SHELL_CACHE = `plateau-${BUILD}`;
 const CDN_CACHE = 'plateau-cdn-v1';
 
 const REQUIRED = ['./', 'index.html', 'style.css', 'app.js', 'core.js', 'worker.js', 'manifest.webmanifest',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'data/products.json'];
+  'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'data/products.json',
+  ...['utensils', 'milk', 'refresh-cw', 'arrow-right', 'arrow-left', 'minus', 'plus', 'search', 'check', 'selection-on', 'selection-off']
+    .map((n) => `icons/ui/${n}.svg`)];
 const OPTIONAL = ['data/vectors.bin', 'data/vectors.meta.json']; // absents = recherche par mots seulement
 const CDN_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
